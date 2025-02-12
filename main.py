@@ -147,24 +147,21 @@ def train(scaled_data):
     seq_length = 24
     X, y = create_sequences(scaled_data, seq_length)
 
-    train_size = int(len(X) * 0.85)
-    X_train, X_valid = X[:train_size], X[train_size:]
-    y_train, y_valid = y[:train_size], y[train_size:]
+    X_train = X
+    y_train = y
 
     model = Sequential([
-            LSTM(64, return_sequences=True, input_shape=(seq_length, X.shape[2])),
+            LSTM(32, return_sequences=True, input_shape=(seq_length, X.shape[2])),
             Dropout(0.2),
-            LSTM(64, return_sequences=True),
+            LSTM(32, return_sequences=False),
             Dropout(0.2),
-            LSTM(64, return_sequences=False),
-            Dropout(0.2),
-            Dense(32, activation='relu'),
+            Dense(15, activation='relu'),
             Dense(6),
     ])
 
     model.compile(optimizer='adam', loss='mse')
 
-    model.fit(X_train, y_train, epochs=20, batch_size=32, validation_data=(X_valid, y_valid))
+    model.fit(X_train, y_train, epochs=10, batch_size=32)
     
     return model
 
